@@ -1,0 +1,46 @@
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form{
+    background-color: transparent;
+    border: solid 1px #ccc;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 16px;
+}
+
+.form img{
+    width: 100px;
+    align-self: center;
+}
+
+.form h3{
+    text-align: center;
+    color: gray;
+}
+
+.form input[type="text"], input[type="password"]{
+    padding: 8px;
+    background-color: transparent;
+    border: solid 1px #ccc;
+    border-radius: 4px;
+
+}
+
+.form input[type="submit"]{
+    padding: 8px;
+    background-color: transparent;
+    border: solid 1px green;
+    border-radius: 4px;
+}
+
+.checkbox {
+    display: flex;
+    gap: 4px;
+}
