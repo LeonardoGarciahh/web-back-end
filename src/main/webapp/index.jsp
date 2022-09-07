@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>JSP - Hello World</title>
+    <title>JSP - Restrito</title>
+    <link rel="stylesheet" type="text/css" href="./public/mainPage.css" media="screen" />
 </head>
 <body>
-<h1><%= "Hello World!" %>
-</h1>
+<h1>Acesso Restrito <a href="loggout">Sair</a></h1>
 <br/>
-<h3>${sessionScope.get("user")}</h3>
-<a href="loggout">Logout</a>
+<h3>Seja bem-vindo, ${sessionScope.get("user")}</h3>
+
 </body>
 </html>
