@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 @WebFilter(filterName = "FilterAuthentication", urlPatterns = "/*")
 public class FilterAuthentication implements Filter {
@@ -17,10 +18,21 @@ public class FilterAuthentication implements Filter {
     public void destroy() {
     }
 
+    public Boolean checkSessionExist(String sessionId, HttpServletRequest httpReq){
 
-    public void createForgetSession(String id, HttpServletRequest request){
-        HttpSession session = request.getSession();
-        session.setAttribute("user", id);
+        Enumeration<String> attributes = httpReq.getSession().getAttributeNames();
+
+        boolean response = false;
+
+        while (attributes.hasMoreElements()) {
+            String attribute = (String) attributes.nextElement();
+            System.out.println(sessionId);
+            if (httpReq.getSession().getAttribute(attribute).equals(sessionId)) {
+                response = true;
+            }
+            System.out.println(attribute+" : "+httpReq.getSession().getAttribute(attribute));
+        }
+        return response;
     }
 
     @Override
@@ -34,13 +46,16 @@ public class FilterAuthentication implements Filter {
             Cookie[] cookies = httpReq.getCookies();
 
 
+
             if (cookies != null) {
                 for(Cookie cookie : cookies) {
                     if(cookie.getName().equals("keepLogged")) {
                         boolean keepLogged = !cookie.getValue().equals("");
                         if(keepLogged && targetURI.contains("login.jsp")) {
-                            createForgetSession(cookie.getValue(), httpReq);
-                            httpReq.getRequestDispatcher("index.jsp").forward(request, response);
+                            System.out.println(checkSessionExist(cookie.getValue(), httpReq));
+                            if (checkSessionExist(cookie.getValue(), httpReq)){
+                                httpReq.getRequestDispatcher("index.jsp").forward(request, response);
+                            }
                         }
                     }
                 }
