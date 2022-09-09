@@ -25,6 +25,10 @@ public class Authentication extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("user", username);
 
+            Cookie cookie = new Cookie("JSESSIONID", session.getId());
+            cookie.setMaxAge(Integer.MAX_VALUE);
+            response.addCookie(cookie);
+
             if(keepLogged != null) {
                 Cookie ck = new Cookie("keepLogged", username);
                 ck.setMaxAge(60*60*24*7);

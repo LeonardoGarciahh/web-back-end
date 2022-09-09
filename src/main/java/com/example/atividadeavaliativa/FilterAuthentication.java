@@ -18,22 +18,12 @@ public class FilterAuthentication implements Filter {
     public void destroy() {
     }
 
-    public Boolean checkSessionExist(String sessionId, HttpServletRequest httpReq){
 
-        Enumeration<String> attributes = httpReq.getSession().getAttributeNames();
-
-        boolean response = false;
-
-        while (attributes.hasMoreElements()) {
-            String attribute = (String) attributes.nextElement();
-            System.out.println(sessionId);
-            if (httpReq.getSession().getAttribute(attribute).equals(sessionId)) {
-                response = true;
-            }
-            System.out.println(attribute+" : "+httpReq.getSession().getAttribute(attribute));
-        }
-        return response;
+    public void createForgetSession(String id, HttpServletRequest request){
+        HttpSession session = request.getSession();
+          session.setAttribute("user", id);
     }
+
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -46,16 +36,14 @@ public class FilterAuthentication implements Filter {
             Cookie[] cookies = httpReq.getCookies();
 
 
-
             if (cookies != null) {
                 for(Cookie cookie : cookies) {
                     if(cookie.getName().equals("keepLogged")) {
                         boolean keepLogged = !cookie.getValue().equals("");
-                        if(keepLogged && targetURI.contains("login.jsp")) {
-                            System.out.println(checkSessionExist(cookie.getValue(), httpReq));
-                            if (checkSessionExist(cookie.getValue(), httpReq)){
-                                httpReq.getRequestDispatcher("index.jsp").forward(request, response);
-                            }
+                        System.out.println(httpReq.getSession().getAttribute("user") != null);
+                        if(keepLogged && targetURI.contains("login.jsp") && httpReq.getSession().getAttribute("user") != null) {
+                            createForgetSession(cookie.getValue(), httpReq);
+                            httpReq.getRequestDispatcher("index.jsp").forward(request, response);
                         }
                     }
                 }
