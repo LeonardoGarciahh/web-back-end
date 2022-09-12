@@ -41,6 +41,9 @@ public class FilterAuthentication implements Filter {
             ArrayList<User> users = Users.getUsers();
             System.out.println(users);
 
+            if (targetURI.equals("/web_back_end_war_exploded/")) {
+                httpRes.sendRedirect("index.jsp");
+            }
 
             boolean keepLogged = false;
             if (cookies != null) {
