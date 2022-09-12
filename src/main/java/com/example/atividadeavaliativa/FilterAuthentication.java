@@ -1,5 +1,8 @@
 package com.example.atividadeavaliativa;
 
+import com.example.atividadeavaliativa.Controller.Users;
+import com.example.atividadeavaliativa.entity.User;
+
 import javax.servlet.*;
 import javax.servlet.annotation.*;
 import javax.servlet.http.Cookie;
@@ -33,15 +36,20 @@ public class FilterAuthentication implements Filter {
             HttpServletResponse httpRes = (HttpServletResponse) response;
             String targetURI = httpReq.getRequestURI();
 
-            Cookie[] cookies = httpReq.getCookies();
+        Cookie[] cookies = httpReq.getCookies();
+
+            ArrayList<User> users = Users.getUsers();
+            System.out.println(users);
 
 
+            boolean keepLogged = false;
             if (cookies != null) {
                 for(Cookie cookie : cookies) {
                     if(cookie.getName().equals("keepLogged")) {
-                        boolean keepLogged = !cookie.getValue().equals("");
-                        System.out.println(httpReq.getSession().getAttribute("user") != null);
-                        if(keepLogged && targetURI.contains("login.jsp") && httpReq.getSession().getAttribute("user") != null) {
+                        keepLogged = !cookie.getValue().equals("");
+
+                        String username = cookie.getValue();
+                        if(keepLogged && targetURI.contains("login.jsp") && Users.checkIfUserExist(username)) {
                             createForgetSession(cookie.getValue(), httpReq);
                             httpReq.getRequestDispatcher("index.jsp").forward(request, response);
                         }
@@ -54,7 +62,7 @@ public class FilterAuthentication implements Filter {
             }
 
             if(httpReq.getSession().getAttribute("user") != null && targetURI.contains("login.jsp")) {
-                httpReq.getRequestDispatcher("index.jsp").forward(request, response);
+                httpRes.sendRedirect("index.jsp");
             }
 
             chain.doFilter(request, response);
